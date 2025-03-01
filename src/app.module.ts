@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EnvironmentalFacilitiesModule } from './modules/environmental-facilities/environmental-facilities.module';
+import { EnvironmentalIndicatorsModule } from './modules/environmental-indicators/environmental-indicators.module';
 
 @Module({
     imports: [
@@ -17,6 +18,7 @@ import { EnvironmentalFacilitiesModule } from './modules/environmental-facilitie
             synchronize: true,
         }),
         EnvironmentalFacilitiesModule,
+        EnvironmentalIndicatorsModule
     ],
     controllers: [AppController],
     providers: [AppService],

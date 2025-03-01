@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, JoinColumn } from 'typeorm';
-import { EnvironmentalIndicator } from './environmental-indicator.entity';
+import { EnvironmentalIndicator } from '../../environmental-indicators/entities/environmental-indicator.entity';
 
 @Entity()
 export class EnvironmentalFacility {

@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { EnvironmentalFacility } from './environmental-facility.entity';
+import { EnvironmentalFacility } from '../../environmental-facilities/entities/environmental-facility.entity';
 
 @Entity()
 export class EnvironmentalIndicator {
@@ -11,6 +11,9 @@ export class EnvironmentalIndicator {
 
     @Column()
     public value: string;
+
+    @Column()
+    public date: Date;
 
     @Column({ nullable: true })
     public norm: string;
