@@ -2,8 +2,15 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { EnvironmentalFacilitiesModule } from './modules/environmental-facilities/environmental-facilities.module';
-import { EnvironmentalIndicatorsModule } from './modules/environmental-indicators/environmental-indicators.module';
+import { EnvironmentalFacilityIndicatorController } from './controllers/environmental-facility-indicators.controller';
+import { EnvironmentalFacilitiesController } from './controllers/environmental-facilities.controller';
+import { EnvironmentalIndicatorsController } from './controllers/environmental-indicators.controller';
+import { EnvironmentalFacilitiesService } from './services/environmental-facilities.service';
+import { EnvironmentalIndicatorsService } from './services/environmental-indicators.service';
+import { EnvironmentalFacilityIndicatorsService } from './services/environmental-facility-indicators.service';
+import { EnvironmentalFacility } from './entities/environmental-facility.entity';
+import { EnvironmentalIndicator } from './entities/environmental-indicator.entity';
+import { EnvironmentalFacilityIndicator } from './entities/environmental-facility-indicator.entity';
 
 @Module({
     imports: [
@@ -17,10 +24,23 @@ import { EnvironmentalIndicatorsModule } from './modules/environmental-indicator
             autoLoadEntities: true,
             synchronize: true,
         }),
-        EnvironmentalFacilitiesModule,
-        EnvironmentalIndicatorsModule
+        TypeOrmModule.forFeature([
+            EnvironmentalFacility,
+            EnvironmentalIndicator,
+            EnvironmentalFacilityIndicator,
+        ]),
     ],
-    controllers: [AppController],
-    providers: [AppService],
+    controllers: [
+        AppController,
+        EnvironmentalFacilitiesController,
+        EnvironmentalIndicatorsController,
+        EnvironmentalFacilityIndicatorController,
+    ],
+    providers: [
+        AppService,
+        EnvironmentalFacilitiesService,
+        EnvironmentalIndicatorsService,
+        EnvironmentalFacilityIndicatorsService,
+    ],
 })
 export class AppModule { }

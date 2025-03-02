@@ -1,5 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, JoinColumn } from 'typeorm';
-import { EnvironmentalIndicator } from '../../environmental-indicators/entities/environmental-indicator.entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import {
+    EnvironmentalFacilityIndicator
+} from './environmental-facility-indicator.entity';
 
 @Entity()
 export class EnvironmentalFacility {
@@ -27,7 +29,6 @@ export class EnvironmentalFacility {
     @Column({ name: 'indicators_title' })
     public indicatorsTitle: string;
 
-    @OneToMany(() => EnvironmentalIndicator, (indicator) => indicator.environmentalFacility)
-    @JoinColumn({ name: 'environmental_facility_id' })
-    public indicators: EnvironmentalIndicator[];
+    @OneToMany(() => EnvironmentalFacilityIndicator, (facilityIndicator) => facilityIndicator.environmentalFacility)
+    public facilityIndicators: EnvironmentalFacilityIndicator[];
 }

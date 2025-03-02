@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
-import { EnvironmentalFacilitiesService } from './environmental-facilities.service';
-import { EnvironmentalFacility } from './entities/environmental-facility.entity';
-import { EnvironmentalSubsystem } from '../../enums/environmental-subsystem';
+import { EnvironmentalFacilitiesService } from '../services/environmental-facilities.service';
+import { EnvironmentalFacility } from '../entities/environmental-facility.entity';
+import { EnvironmentalSubsystem } from '../enums/environmental-subsystem';
 
 @Controller('environmental-facilities')
 export class EnvironmentalFacilitiesController {

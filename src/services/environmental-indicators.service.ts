@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { EnvironmentalIndicator } from './entities/environmental-indicator.entity';
+import { EnvironmentalIndicator } from '../entities/environmental-indicator.entity';
 
 @Injectable()
 export class EnvironmentalIndicatorsService {
@@ -11,11 +11,11 @@ export class EnvironmentalIndicatorsService {
     ) { }
 
     public async getAll(): Promise<EnvironmentalIndicator[]> {
-        return this.indicatorRepository.find({ relations: ['environmentalFacility'] });
+        return this.indicatorRepository.find();
     }
 
     public async getById(id: number): Promise<EnvironmentalIndicator | null> {
-        return this.indicatorRepository.findOne({ where: { id }, relations: ['environmentalFacility'] });
+        return this.indicatorRepository.findOne({ where: { id }});
     }
 
     public async create(data: Partial<EnvironmentalIndicator>): Promise<EnvironmentalIndicator> {

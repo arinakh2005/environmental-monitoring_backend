@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
-import { EnvironmentalIndicatorsService } from './environmental-indicators.service';
-import { EnvironmentalIndicator } from './entities/environmental-indicator.entity';
+import { EnvironmentalIndicatorsService } from '../services/environmental-indicators.service';
+import { EnvironmentalIndicator } from '../entities/environmental-indicator.entity';
 
 @Controller('environmental-indicators')
 export class EnvironmentalIndicatorsController {
