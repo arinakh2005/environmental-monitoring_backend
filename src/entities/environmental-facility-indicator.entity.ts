@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { EnvironmentalIndicator } from './environmental-indicator.entity';
 import { EnvironmentalFacility } from './environmental-facility.entity';
 
@@ -20,8 +20,10 @@ export class EnvironmentalFacilityIndicator {
     public meets_standard: boolean;
 
     @ManyToOne(() => EnvironmentalFacility, (environmentalFacility) => environmentalFacility.facilityIndicators, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'environmental_facility_id' })
     public environmentalFacility: EnvironmentalFacility;
 
     @ManyToOne(() => EnvironmentalIndicator, (environmentalIndicator) => environmentalIndicator.facilityIndicators, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'environmental_indicator_id' })
     public environmentalIndicator: EnvironmentalIndicator;
 }

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, Query } from '@nestjs/common';
 import { EnvironmentalFacilityIndicatorsService } from '../services/environmental-facility-indicators.service';
 import { EnvironmentalFacilityIndicator } from '../entities/environmental-facility-indicator.entity';
 
@@ -14,6 +14,15 @@ export class EnvironmentalFacilityIndicatorController {
     @Get(':id')
     public async findOne(@Param('id') id: number): Promise<EnvironmentalFacilityIndicator | null> {
         return this.facilityIndicatorService.findOne(id);
+    }
+
+    @Get('facility/:facilityId/indicator/:indicatorId/last')
+    public async findLastIndicators(
+      @Param('facilityId') facilityId: number,
+      @Param('indicatorId') indicatorId: number,
+      @Query('count') count?: number,
+    ): Promise<EnvironmentalFacilityIndicator[]> {
+        return this.facilityIndicatorService.findLastIndicators(facilityId, indicatorId, count ?? 7);
     }
 
     @Post()

@@ -21,6 +21,16 @@ export class EnvironmentalFacilityIndicatorsService {
         });
     }
 
+    public async findLastIndicators(facilityId: number, indicatorId: number, count: number = 7): Promise<EnvironmentalFacilityIndicator[]> {
+        return this.facilityIndicatorRepository
+          .createQueryBuilder('environmentalFacilityIndicator')
+          .where('environmentalFacilityIndicator.environmental_facility_id = :facilityId', { facilityId })
+          .andWhere('environmentalFacilityIndicator.environmental_indicator_id = :indicatorId', { indicatorId })
+          .orderBy('environmentalFacilityIndicator.date', 'ASC')
+          .limit(count)
+          .getMany();
+    }
+
     public async create(dto: EnvironmentalFacilityIndicator): Promise<EnvironmentalFacilityIndicator> {
         const facilityIndicator = this.facilityIndicatorRepository.create(dto);
 

@@ -30,7 +30,24 @@ export class EnvironmentalFacilitiesService {
             query.where('facility.subsystemType IN (:...subsystemTypes)', { subsystemTypes });
         }
 
-        return query.getMany();
+        const facilities = await query.getMany();
+
+        return facilities.map((facility) => {
+            const uniqueIndicators = new Map<number, EnvironmentalFacilityIndicator>();
+
+            facility.facilityIndicators.forEach((facilityIndicator) => {
+                const existing = uniqueIndicators.get(facilityIndicator.environmentalIndicator.id);
+
+                if (!existing || new Date(facilityIndicator.date) > new Date(existing.date)) {
+                    uniqueIndicators.set(facilityIndicator.environmentalIndicator.id, facilityIndicator);
+                }
+            });
+
+            return {
+                ...facility,
+                facilityIndicators: Array.from(uniqueIndicators.values()),
+            };
+        });
     }
 
     public async findOne(id: number): Promise<EnvironmentalFacility | null> {
@@ -56,17 +73,11 @@ export class EnvironmentalFacilitiesService {
             });
 
             const existingIds = existingIndicators.map(indicator => indicator.id);
-            const newIds = facility.facilityIndicators.map(indicator => indicator.id).filter(id => id);
 
             for (const indicator of facility.facilityIndicators) {
                 if (indicator.id && existingIds.includes(indicator.id)) {
                     await this.facilityIndicatorsRepository.update(indicator.id, indicator);
                 }
-            }
-
-            const indicatorsToDelete = existingIds.filter(id => !newIds.includes(id));
-            if (indicatorsToDelete.length > 0) {
-                await this.facilityIndicatorsRepository.delete(indicatorsToDelete);
             }
 
             const newIndicators = facility.facilityIndicators.filter(indicator => !indicator.id);
