@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { EnvironmentalFacilityIndicator } from '../entities/environmental-facility-indicator.entity';
+import { EnvironmentalSubsystem } from '../enums/environmental-subsystem';
 
 @Injectable()
 export class EnvironmentalFacilityIndicatorsService {
@@ -32,8 +33,10 @@ export class EnvironmentalFacilityIndicatorsService {
     }
 
     public async create(dto: EnvironmentalFacilityIndicator): Promise<EnvironmentalFacilityIndicator> {
-        if (dto.environmentalIndicator.subsystemType === 'air_quality' && ['Пил 10 мкм', 'Пил 2.5 мкм', 'Аміак'].includes(dto.environmentalIndicator.name)) {
+        if (dto.environmentalIndicator.subsystemType === EnvironmentalSubsystem.AirQuality && ['Пил 10 мкм', 'Пил 2.5 мкм', 'Аміак'].includes(dto.environmentalIndicator.name)) {
             dto.calculatedData = { aqi: this.getAQIParamLevel(dto.environmentalIndicator.name, +dto.value)};
+        } else if (dto.environmentalIndicator.subsystemType ===  EnvironmentalSubsystem.CoastalWater && ['Арсен', 'Кобальт', 'Хром загальний', 'Алахлор', 'Антрацен', 'Бензол'].includes(dto.environmentalIndicator.name)) {
+            dto.calculatedData = { concentrationRatio: +dto.value / +dto.environmentalIndicator.norm };
         }
 
         const facilityIndicator = this.facilityIndicatorRepository.create(dto);
@@ -45,8 +48,14 @@ export class EnvironmentalFacilityIndicatorsService {
         const existingIndicator = await this.facilityIndicatorRepository.findOne({ where: { id }, relations: ['environmentalIndicator'] });
         if (!existingIndicator) return null;
 
-        if (existingIndicator.environmentalIndicator.subsystemType === 'air_quality' && ['Пил 10 мкм', 'Пил 2.5 мкм', 'Аміак'].includes(existingIndicator.environmentalIndicator.name)) {
+        if (existingIndicator.environmentalIndicator.subsystemType ===  EnvironmentalSubsystem.AirQuality && ['Пил 10 мкм', 'Пил 2.5 мкм', 'Аміак'].includes(existingIndicator.environmentalIndicator.name)) {
             dto.calculatedData = { aqi: this.getAQIParamLevel(existingIndicator.environmentalIndicator.name, +dto.value) };
+        } else if (existingIndicator.environmentalIndicator.subsystemType ===  EnvironmentalSubsystem.CoastalWater && ['Арсен', 'Свинець та його сполуки', 'Кадмій та його сполуки', 'Нітрит-іони'].includes(existingIndicator.environmentalIndicator.name)) {
+            dto.calculatedData = { concentrationRatio: +dto.value / +existingIndicator.environmentalIndicator.norm };
+        }
+
+        if (existingIndicator.environmentalIndicator.norm) {
+            existingIndicator.meets_standard = +existingIndicator.value <= +existingIndicator.environmentalIndicator.norm;
         }
 
         await this.facilityIndicatorRepository.update(id, dto);

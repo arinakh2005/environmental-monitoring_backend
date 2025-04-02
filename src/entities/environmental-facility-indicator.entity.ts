@@ -14,9 +14,6 @@ export class EnvironmentalFacilityIndicator {
     public date: Date;
 
     @Column({ nullable: true })
-    public norm: string;
-
-    @Column({ nullable: true })
     public meets_standard: boolean;
 
     @Column({ name: 'calculated_data', type: 'json', nullable: true })

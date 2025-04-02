@@ -82,6 +82,12 @@ export class EnvironmentalFacilitiesService {
                   .map((indicator) => indicator.calculatedData?.aqi)
                   .filter((aqi) => !!aqi);
                 facility.calculatedData = { overallAqi: aqiValues.length > 0 ? Math.max(...aqiValues) : null };
+            } else if (facility.subsystemType === EnvironmentalSubsystem.CoastalWater && filteredByFacilityIndicators.length > 0) {
+                const concentrationRatios = filteredByFacilityIndicators
+                  .map((indicator) => indicator.calculatedData?.concentrationRatio)
+                  .filter((concentrationRatio) => !!concentrationRatio);
+                const totalConcentrationRatio = concentrationRatios.reduce((sum, ratio) => sum + ratio, 0);
+                facility.calculatedData = { totalConcentrationRatio : concentrationRatios.length > 0 ? totalConcentrationRatio : null };
             }
         }
 

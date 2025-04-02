@@ -13,6 +13,9 @@ export class EnvironmentalIndicator {
     @Column({ name: 'measurement_unit', nullable: true })
     public measurementUnit: string;
 
+    @Column({ nullable: true, type: 'float' })
+    public norm: number;
+
     @Column({ name: 'subsystem_type', type: 'enum', enum: EnvironmentalSubsystem, nullable: true })
     public subsystemType: EnvironmentalSubsystem;
 
