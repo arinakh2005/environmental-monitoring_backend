@@ -29,6 +29,9 @@ export class EnvironmentalFacility {
     @Column({ name: 'indicators_title' })
     public indicatorsTitle: string;
 
+    @Column({ name: 'calculated_data', type: 'json', nullable: true })
+    public calculatedData: Record<string, any>;
+
     @OneToMany(() => EnvironmentalFacilityIndicator, (facilityIndicator) => facilityIndicator.environmentalFacility)
     public facilityIndicators: EnvironmentalFacilityIndicator[];
 }

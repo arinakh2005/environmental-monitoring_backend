@@ -19,6 +19,9 @@ export class EnvironmentalFacilityIndicator {
     @Column({ nullable: true })
     public meets_standard: boolean;
 
+    @Column({ name: 'calculated_data', type: 'json', nullable: true })
+    public calculatedData: Record<string, any>;
+
     @ManyToOne(() => EnvironmentalFacility, (environmentalFacility) => environmentalFacility.facilityIndicators, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'environmental_facility_id' })
     public environmentalFacility: EnvironmentalFacility;

@@ -3,18 +3,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { EnvironmentalFacility } from '../entities/environmental-facility.entity';
 import { EnvironmentalSubsystem } from '../enums/environmental-subsystem';
-import {
-    EnvironmentalFacilityIndicator
-} from '../entities/environmental-facility-indicator.entity';
+import { EnvironmentalFacilityIndicator } from '../entities/environmental-facility-indicator.entity';
+import { EnvironmentalFacilityIndicatorsService } from './environmental-facility-indicators.service';
 
 @Injectable()
 export class EnvironmentalFacilitiesService {
     constructor(
         @InjectRepository(EnvironmentalFacility)
         private readonly facilityRepository: Repository<EnvironmentalFacility>,
-
-        @InjectRepository(EnvironmentalFacilityIndicator)
-        private readonly facilityIndicatorsRepository: Repository<EnvironmentalFacilityIndicator>,
+        private readonly facilityIndicatorsService: EnvironmentalFacilityIndicatorsService,
     ) { }
 
     public async findAll(subsystemTypes?: EnvironmentalSubsystem[]): Promise<EnvironmentalFacility[]> {
@@ -62,34 +59,37 @@ export class EnvironmentalFacilitiesService {
     }
 
     public async update(id: number, facility: Partial<EnvironmentalFacility>): Promise<EnvironmentalFacility | null> {
-        await this.facilityRepository.update(id, {
-            name: facility.name,
-            subsystemType: facility.subsystemType,
-        });
-
         if (facility.facilityIndicators) {
-            const existingIndicators = await this.facilityIndicatorsRepository.find({
-                where: { environmentalFacility: { id } },
-            });
-
-            const existingIds = existingIndicators.map(indicator => indicator.id);
+            const existingIndicators = await this.facilityIndicatorsService.findAll();
+            const filteredByFacilityIndicators = existingIndicators.filter((indicator) => +indicator.environmentalFacility.id === +id);
+            const existingIds = filteredByFacilityIndicators.map(indicator => indicator.id);
 
             for (const indicator of facility.facilityIndicators) {
                 if (indicator.id && existingIds.includes(indicator.id)) {
-                    await this.facilityIndicatorsRepository.update(indicator.id, indicator);
+                    await this.facilityIndicatorsService.update(indicator.id, indicator);
                 }
             }
 
             const newIndicators = facility.facilityIndicators.filter(indicator => !indicator.id);
             if (newIndicators.length > 0) {
-                await this.facilityIndicatorsRepository.save(
-                  newIndicators.map(indicator => ({
-                      ...indicator,
-                      facility: { id },
-                  }))
-                );
+                for (const indicator of newIndicators) {
+                    await this.facilityIndicatorsService.create({...indicator, environmentalFacility: { id } as EnvironmentalFacility});
+                }
+            }
+
+            if (facility.subsystemType === EnvironmentalSubsystem.AirQuality && filteredByFacilityIndicators.length > 0) {
+                const aqiValues = filteredByFacilityIndicators
+                  .map((indicator) => indicator.calculatedData?.aqi)
+                  .filter((aqi) => !!aqi);
+                facility.calculatedData = { overallAqi: aqiValues.length > 0 ? Math.max(...aqiValues) : null };
             }
         }
+
+        await this.facilityRepository.update(id, {
+            name: facility.name,
+            subsystemType: facility.subsystemType,
+            calculatedData: facility.calculatedData,
+        });
 
         return this.findOne(id);
     }
