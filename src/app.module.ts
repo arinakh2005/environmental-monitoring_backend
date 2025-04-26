@@ -1,16 +1,19 @@
-import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { EnvironmentalFacilityIndicatorController } from './controllers/environmental-facility-indicators.controller';
 import { EnvironmentalFacilitiesController } from './controllers/environmental-facilities.controller';
-import { EnvironmentalIndicatorsController } from './controllers/environmental-indicators.controller';
 import { EnvironmentalFacilitiesService } from './services/environmental-facilities.service';
-import { EnvironmentalIndicatorsService } from './services/environmental-indicators.service';
-import { EnvironmentalFacilityIndicatorsService } from './services/environmental-facility-indicators.service';
 import { EnvironmentalFacility } from './entities/environmental-facility.entity';
-import { EnvironmentalIndicator } from './entities/environmental-indicator.entity';
 import { EnvironmentalFacilityIndicator } from './entities/environmental-facility-indicator.entity';
+import { EnvironmentalFacilityIndicatorController } from './controllers/environmental-facility-indicators.controller';
+import { EnvironmentalFacilityIndicatorsService } from './services/environmental-facility-indicators.service';
+import { EnvironmentalIndicator } from './entities/environmental-indicator.entity';
+import { EnvironmentalIndicatorsController } from './controllers/environmental-indicators.controller';
+import { EnvironmentalIndicatorsService } from './services/environmental-indicators.service';
+import { EnvironmentalProtectionMeasure } from './entities/environmental-protection-measure.entity';
+import { EnvironmentalProtectionMeasureController } from './controllers/environmental-protection-measure.controller';
+import { EnvironmentalProtectionMeasureService } from './services/environmental-protection-measure.service';
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
     imports: [
@@ -28,6 +31,7 @@ import { EnvironmentalFacilityIndicator } from './entities/environmental-facilit
             EnvironmentalFacility,
             EnvironmentalIndicator,
             EnvironmentalFacilityIndicator,
+            EnvironmentalProtectionMeasure,
         ]),
     ],
     controllers: [
@@ -35,12 +39,14 @@ import { EnvironmentalFacilityIndicator } from './entities/environmental-facilit
         EnvironmentalFacilitiesController,
         EnvironmentalIndicatorsController,
         EnvironmentalFacilityIndicatorController,
+        EnvironmentalProtectionMeasureController,
     ],
     providers: [
         AppService,
         EnvironmentalFacilitiesService,
         EnvironmentalIndicatorsService,
         EnvironmentalFacilityIndicatorsService,
+        EnvironmentalProtectionMeasureService,
     ],
 })
 export class AppModule { }
